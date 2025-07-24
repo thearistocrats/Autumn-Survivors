@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bddgx3f6adgq2"]
+
+[ext_resource type="Script" uid="uid://djkrdrsmc4ngr" path="res://game.gd" id="1_80nbo"]
+[ext_resource type="PackedScene" uid="uid://cghrkkhvnqdit" path="res://racer.tscn" id="2_e2o6t"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_80nbo")
+num_racers = 44
+
+[node name="Racer2" parent="." instance=ExtResource("2_e2o6t")]
+position = Vector2(471, 205)
+
+[node name="Racer" parent="." instance=ExtResource("2_e2o6t")]
+position = Vector2(410, 205)

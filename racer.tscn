@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cghrkkhvnqdit"]
+
+[ext_resource type="PackedScene" uid="uid://dkj72h186wuvd" path="res://components/collider/collidable_object.tscn" id="1_aicwh"]
+
+[node name="Racer" type="Node2D"]
+
+[node name="CollidableObject" parent="." instance=ExtResource("1_aicwh")]
