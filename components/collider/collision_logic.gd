@@ -23,6 +23,7 @@ static func get_collision_velocity(objectA, objectB) -> Vector2:
 		
 	var min_type = min(objectA.object_type, objectB.object_type)
 	var max_type = max(objectA.object_type, objectB.object_type)
+	var is_flipped = (objectA.object_type <= objectB.object_type)
 	var key = [min_type, max_type]
 	
 	var collision_handlers = {
@@ -50,11 +51,12 @@ static func get_collision_velocity(objectA, objectB) -> Vector2:
 	}
 	
 	if collision_handlers.has(key):
-		return (collision_handlers[key].call(objectA, objectB))
+		var normal = (objectA.position - objectB.position).normalized()
+		return (collision_handlers[key].call(objectA, objectB, is_flipped, normal))
 	return Vector2.ZERO
 
 static func get_normal(objectA, objectB) -> Vector2:
-	return(objectA.position - objectB.position).normalized()
+	return (objectA.position - objectB.position).normalized()
 
 static func damping_ratio(A:float, B:float, type:int) -> float:
 	match type:
@@ -69,74 +71,108 @@ static func damping_ratio(A:float, B:float, type:int) -> float:
 		_:
 			return 0.0
 
-static func _handle_wall_wall_collision(objectA, objectB) -> Vector2:
-	var normal = get_normal(objectA, objectB)
-	return objectA.velocity * -1.0
+static func _handle_wall_wall_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_wall_racer_collision(objectA, objectB) -> Vector2:
-	var normal = get_normal(objectA, objectB)
-	var damping_ratio = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
-	return objectA.velocity.bounce(normal) + objectB.velocity * damping_ratio
+static func _handle_wall_racer_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_wall_player_collision(objectA, objectB) -> Vector2:
-	if objectA.object_type == object_type.WALL: return objectA.velocity
-	return Vector2.ZERO
+static func _handle_wall_player_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_wall_projectile_collision(objectA, objectB) -> Vector2:
-	if objectA.object_type == object_type.WALL: return objectA.velocity
-	return Vector2.ZERO
+static func _handle_wall_projectile_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_wall_destructable_collision(objectA, objectB) -> Vector2:
-	if objectA.object_type == object_type.WALL: return objectA.velocity
-	return Vector2.ZERO
+static func _handle_wall_destructable_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_wall_pickup_collision(objectA, objectB) -> Vector2:
-	if objectA.object_type == object_type.WALL: return objectA.velocity
-	return Vector2.ZERO
+static func _handle_wall_pickup_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_racer_racer_collision(objectA, objectB) -> Vector2:
-	var normal = get_normal(objectA, objectB)
-	var damping_ratio = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
-	return objectA.velocity.bounce(normal) + objectB.velocity * damping_ratio
+static func _handle_racer_racer_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	print(normal_vector)
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) * damping
+	return objectB.velocity.bounce(normal_vector) * damping
 
-static func _handle_racer_player_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_racer_player_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_racer_projectile_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_racer_projectile_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_racer_destructable_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_racer_destructable_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_racer_pickup_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_racer_pickup_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_player_player_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_player_player_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_player_projectile_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_player_projectile_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_player_destructable_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_player_destructable_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_player_pickup_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_player_pickup_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_projectile_projectile_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_projectile_projectile_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_projectile_destructable_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_projectile_destructable_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_projectile_pickup_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_projectile_pickup_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_destructable_destructable_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_destructable_destructable_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_destructable_pickup_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_destructable_pickup_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping
 
-static func _handle_pickup_pickup_collision(objectA, objectB) -> Vector2:
-	return Vector2.ZERO
+static func _handle_pickup_pickup_collision(objectA, objectB, is_flipped:bool, normal_vector:Vector2) -> Vector2:
+	var damping = damping_ratio(objectA.damping, objectB.damping, damping_type.MAX)
+	if !is_flipped: return objectA.velocity.bounce(normal_vector) + objectB.velocity * damping
+	return objectB.velocity.bounce(normal_vector) + objectB.velocity * damping

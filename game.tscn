@@ -5,10 +5,5 @@
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_80nbo")
+racer_scene = ExtResource("2_e2o6t")
 num_racers = 44
-
-[node name="Racer2" parent="." instance=ExtResource("2_e2o6t")]
-position = Vector2(471, 205)
-
-[node name="Racer" parent="." instance=ExtResource("2_e2o6t")]
-position = Vector2(410, 205)
