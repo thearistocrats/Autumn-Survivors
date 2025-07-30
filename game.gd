@@ -3,8 +3,8 @@ extends Node2D
 @export var racer_scene:PackedScene
 @export var num_racers:int
 func _ready() -> void:
-	#spawn_racers()
-	_debug()
+	spawn_racers()
+	#_debug()
 	
 func _debug():
 	var spawn_position = get_viewport_rect().size/4
@@ -22,7 +22,7 @@ func _debug():
 
 func spawn_racers():
 	var spawn_position = get_viewport_rect().size/4
-	var racer_offset = 20
+	var racer_offset = 40
 	var spawn_grid = 8
 	for i in range(num_racers):
 		var new_racer = racer_scene.instantiate()

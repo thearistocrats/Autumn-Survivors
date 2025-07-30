@@ -23,9 +23,8 @@ func set_object_material(new_mass:int, new_damping:float):
 func _physics_process(delta: float) -> void:
 	self.position += self.velocity * delta
 
-signal collided_with_object(area: Area2D)
-func _on_area_entered(area: Area2D) -> void:
-	print($AnimatedSprite2D.frame, "arrived with velocity ", self.velocity)
-	self.velocity = collision_logic.get_collision_velocity(self, area)
-	print($AnimatedSprite2D.frame, "exited with velocity ", self.velocity)
-	emit_signal("collided_with_object", area)
+signal collided_with_object(other_object: CollidableObject)
+func _on_area_entered(other_object: CollidableObject) -> void:
+	self.velocity = collision_logic.get_collision_velocity(self, other_object)
+	#print("collided with ", self.object_type, " and ", other_object.object_type)
+	emit_signal("collided_with_object", other_object)
