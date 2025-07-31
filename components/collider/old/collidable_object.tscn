@@ -1,6 +1,6 @@
 [gd_scene load_steps=48 format=3 uid="uid://dkj72h186wuvd"]
 
-[ext_resource type="Script" uid="uid://behbrv0i7swj7" path="res://components/collider/collidable_object.gd" id="1_bnhso"]
+[ext_resource type="Script" uid="uid://behbrv0i7swj7" path="res://components/collider/old/collidable_object.gd" id="1_bnhso"]
 [ext_resource type="Texture2D" uid="uid://b6cm7cv7ugwma" path="res://components/racer assets/1.png" id="1_djl0d"]
 [ext_resource type="Texture2D" uid="uid://cincl68070yjq" path="res://components/racer assets/2.png" id="2_bnhso"]
 [ext_resource type="Texture2D" uid="uid://rt526tg2qdxx" path="res://components/racer assets/3.png" id="3_j1ca0"]
