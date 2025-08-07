@@ -1,7 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://cghrkkhvnqdit"]
+[gd_scene load_steps=4 format=3 uid="uid://c45drjecrodid"]
 
-[ext_resource type="PackedScene" uid="uid://dkj72h186wuvd" path="res://components/collider/old/collidable_object.tscn" id="1_aicwh"]
+[ext_resource type="Script" uid="uid://bd23gu5swel2v" path="res://racer.gd" id="1_8bidl"]
+[ext_resource type="PackedScene" uid="uid://bob8wm5fk8qa0" path="res://components/animated_sprite.tscn" id="1_aicwh"]
 
-[node name="Racer" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_aicwh"]
+size = Vector2(40, 40)
 
-[node name="CollidableObject" parent="." instance=ExtResource("1_aicwh")]
+[node name="Racer" type="RigidBody2D"]
+gravity_scale = 0.0
+script = ExtResource("1_8bidl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_aicwh")
+
+[node name="AnimatedSprite2D" parent="." instance=ExtResource("1_aicwh")]
