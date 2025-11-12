@@ -1,9 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://bddgx3f6adgq2"]
+[gd_scene load_steps=4 format=3 uid="uid://bddgx3f6adgq2"]
 
 [ext_resource type="Script" uid="uid://djkrdrsmc4ngr" path="res://game.gd" id="1_80nbo"]
 [ext_resource type="PackedScene" uid="uid://c45drjecrodid" path="res://racer.tscn" id="2_e2o6t"]
+
+[sub_resource type="TileSet" id="TileSet_e2o6t"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_80nbo")
 racer_scene = ExtResource("2_e2o6t")
 num_racers = 44
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+tile_set = SubResource("TileSet_e2o6t")
