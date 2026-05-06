@@ -1,10 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://c7tsohscb1phw"]
+[gd_scene format=3 uid="uid://b2f4m8ymj6ybe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_oh6kn"]
 
-[node name="Node2D" type="StaticBody2D"]
+[node name="Node2D" type="StaticBody2D" unique_id=524652532]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=228681476]
 shape = SubResource("RectangleShape2D_oh6kn")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=144521511]
